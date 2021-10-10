@@ -1,9 +1,21 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import useFirebase from '../../hooks/useFirebase';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 import './Login.css'
 const Login = () => {
-    const {user,signInUsingGoogle}=useFirebase();
+    const { signInUsingGoogle } = useAuth();
+    const location = useLocation()
+    const redirect_uri = location.state?.from || '/shop'
+    console.log('came From', location.state?.from)
+
+    const history = useHistory()
+    const handleGooglelogIn = () => {
+        signInUsingGoogle()
+            .then(result => {
+                history.push(redirect_uri)
+
+            })
+    }
     return (
         <div className="login-form">
             <div>
@@ -18,7 +30,7 @@ const Login = () => {
                 </form>
                 <p>New to ema-john <Link to="/register">Create Account</Link></p>
                 <div>------------- Or -------------</div>
-                <button onClick={signInUsingGoogle} className="btn-regular">Google sing in</button>
+                <button onClick={handleGooglelogIn} className="btn-regular">Google sing in</button>
             </div>
         </div >
     );
